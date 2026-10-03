@@ -25,6 +25,7 @@
   <div style="font-size:12px;color:var(--accent);font-weight:850;letter-spacing:.13em">⚽ U7 · TRAININGSSTATION</div>
   <h1>FUNiño – Druckzonen-Challenge</h1>
   <p class="sub">3 gegen 3 · Befreiung nach Gegentor · 6 Kinder</p>
+  <div id="coachflow-return" hidden style="margin:0 0 14px"><a id="coachflow-return-link" href="https://marinkarimovic.github.io/coachflow/" style="display:block;background:#223d3c;border:1px solid #426e63;color:#d9ffb0;padding:13px;text-align:center;border-radius:13px;text-decoration:none;font-weight:800">← Zurück zu CoachFlow</a></div>
   <section class="card" aria-labelledby="scoretitle">
     <h2 id="scoretitle">Punktestand</h2>
     <div class="teams">
@@ -82,6 +83,22 @@
  document.querySelectorAll('.preset').forEach(b=>b.addEventListener('click',()=>setDuration(Number(b.dataset.seconds))));
  el('applyCustom').addEventListener('click',()=>{const m=Number(el('minutes').value),s=Number(el('seconds').value);if(Number.isInteger(m)&&Number.isInteger(s)&&m>=0&&m<=99&&s>=0&&s<=59&&m*60+s>0){setDuration(m*60+s)}else{alert('Bitte gültige Minuten und Sekunden eingeben.')}});
  el('startPause').addEventListener('click',begin);el('restart').addEventListener('click',reset);el('downTab').addEventListener('click',()=>setMode('down'));el('upTab').addEventListener('click',()=>setMode('up'));window.addEventListener('pageshow',display);document.addEventListener('visibilitychange',()=>{if(!document.hidden)display()});
+ // Optional, validated deep-link from CoachFlow; original standalone behavior remains unchanged.
+ try {
+   const params=new URLSearchParams(location.search);
+   const sec=Number(params.get('seconds'));
+   if(params.has('seconds') && Number.isInteger(sec) && sec>=5 && sec<=5999) setDuration(sec);
+   const requestedBack=params.get('return');
+   if(requestedBack){
+     const back=new URL(requestedBack);
+     const allowedPaths=['/coachflow/','/coachflow/index.html'];
+     const allowedViews=['','?view=library','?view=planner&tab=plan','?view=planner&tab=live'];
+     if(back.protocol==='https:' && back.hostname==='marinkarimovic.github.io' && allowedPaths.includes(back.pathname) && allowedViews.includes(back.search) && !back.hash){
+       el('coachflow-return-link').href=back.href;
+       el('coachflow-return').hidden=false;
+     }
+   }
+ }catch(e){}
  renderScore();display();
  if ('serviceWorker' in navigator && location.protocol === 'https:') {
    window.addEventListener('load', () => {
